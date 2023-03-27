@@ -11,14 +11,26 @@
  *                {0, 0, 0, in} if sel == 11
  */
 
+/**
+ * 00: IN AND !SEL[0] AND !SEL[1]
+ * 01: IN AND !SEL[1] AND SEL[0]
+ * 10: IN AND SEL[1] AND !SEL[0]
+ * 11: IN AND SEL[1] AND SEL[0]
+ */
+
 CHIP DMux4Way {
     IN in, sel[2];
     OUT a, b, c, d;
 
     PARTS:
-    // Put your code here:
+    /** Opposite approach of Mux4Way..becuse they are converse **/
 
-    DMux(in=in, sel=sel[1], a=outa, b=outb);
-    DMux(in=outa, sel=sel[0], a=a, b=b);
-    DMux(in=outb, sel=sel[0], a=c, b=d);
+    /* Divide by most significant bit */
+    /* Tells us which outer section we care about */
+    DMux(in=in, sel=sel[1], a=t1, b=t2);
+
+    /* The section we don't care about will always be ignored */
+    /* Use least significant bit for section we do card about */
+    DMux(in=t1, sel=sel[0], a=a, b=b);
+    DMux(in=t2, sel=sel[0], a=c, b=d);
 }
